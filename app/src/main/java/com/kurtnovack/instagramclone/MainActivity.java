@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,12 +23,14 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     EditText usernameField;
     EditText passwordField;
     TextView changeSignUpModeTextView;
     Button signUpButton;
+    ImageView logo;
+    RelativeLayout relativeLayout;
 
     Boolean signUpModeActive;
 
@@ -40,7 +46,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 changeSignUpModeTextView.setText("Log In");
                 signUpButton.setText("Sign Up");
             }
+        } else if (v.getId() == R.id.logo || v.getId() == R.id.relativeLayout) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+            signUpOrLogIn(v);
+        }
+
+        return false;
     }
 
     public void signUpOrLogIn(View view) {
@@ -92,8 +110,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         passwordField = (EditText) findViewById(R.id.password);
         changeSignUpModeTextView = (TextView) findViewById(R.id.changeSignUpMode);
         signUpButton = (Button) findViewById(R.id.signUpButton);
+        logo = (ImageView) findViewById(R.id.logo);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
 
         changeSignUpModeTextView.setOnClickListener(this);
+        logo.setOnClickListener(this);
+        relativeLayout.setOnClickListener(this);
+
+        usernameField.setOnKeyListener(this);
+        passwordField.setOnKeyListener(this);
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
     }
