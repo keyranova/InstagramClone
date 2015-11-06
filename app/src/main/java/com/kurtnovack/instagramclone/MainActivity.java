@@ -1,6 +1,7 @@
 package com.kurtnovack.instagramclone;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        Log.i("AppInfo", "Signup successful");
+                        showUserList();
                     } else {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(), e.getMessage().substring(e.getMessage().indexOf(" ")), Toast.LENGTH_LONG).show();
@@ -86,15 +87,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ParseUser.logInInBackground(String.valueOf(usernameField.getText()), String.valueOf(passwordField.getText()), new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
-                      if (user != null) {
-                          Log.i("AppInfo", "log in successful");
-                      } else {
-                          e.printStackTrace();
-                          Toast.makeText(getApplicationContext(), e.getMessage().substring(e.getMessage().indexOf(" ")), Toast.LENGTH_LONG).show();
-                      }
+                    if (user != null) {
+                        showUserList();
+                    } else {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), e.getMessage().substring(e.getMessage().indexOf(" ")), Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
+    }
+
+    public void showUserList() {
+        Intent i = new Intent(getApplicationContext(), UserList.class);
+        startActivity(i);
     }
 
     @Override
@@ -103,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (ParseUser.getCurrentUser() != null) {
+            showUserList();
+        }
 
         signUpModeActive = true;
 

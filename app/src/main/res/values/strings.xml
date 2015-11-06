@@ -4,4 +4,6 @@
 
     <string name="app_name">Instagram</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_user_list">User List</string>
+    <string name="title_activity_user_feed">User Feed</string>
 </resources>
